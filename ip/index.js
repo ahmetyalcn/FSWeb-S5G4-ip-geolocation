@@ -1,5 +1,5 @@
 //axios import buraya gelecek
-
+import axios from 'axios';
 var benimIP;
 
 
@@ -30,6 +30,15 @@ async function ipAdresimiAl(){
 	NOT: Bilgisayarın IP adresini öğrenmek için: https://apis.ergineer.com/ipadresim 
 	ADIM 5'e gelene kadar fonksiyonunuzu test etmek için ip nizi URL'ye manuel olarak ekleyebilirsiniz.
 */
+ipAdresimiAl().then(()=>{
+var url = "https://apis.ergineer.com/ipgeoapi/"+ benimIP;
+const getData = axios.get(url);
+getData.then((e)=>{
+	console.log(e.data) 
+	createCard(e.data)
+})
+
+})
 
 /*
 	ADIM 2: Geri döndürülen verileri inceleyin, bu sizin ip bilgileriniz! Bileşen fonksiyonunuzu geliştirmek içindeki bu veri yapısını
@@ -53,6 +62,45 @@ async function ipAdresimiAl(){
 	</div>
     </div>
 */
+const createCard =(obj)=>{
+	let cards = document.querySelector(".cards");
+	let card = document.createElement("div");
+	card.classList.add("card");
+
+	let image = document.createElement("img");
+	image.setAttribute("src",obj["ülkebayrağı"]);
+
+	let cardInfo = document.createElement("div");
+	cardInfo.classList.add("card-info");
+
+	let ipAdd = document.createElement("h3");
+	ipAdd.classList.add("ip");
+	ipAdd.textContent = obj["sorgu"]
+
+	let ulke = document.createElement("p");
+	ulke.classList.add("ulke");
+	ulke.textContent = obj["ülke"] + `(${obj["ülkeKodu"]})`;
+	
+
+	let p1 = document.createElement("p")
+	p1.textContent = `Enlem: ${obj["enlem"]} Boylam: ${obj["boylam"]}`;
+	let p2 = document.createElement("p")
+	p2.textContent = `Şehir: ${obj["şehir"]}`
+	let p3 = document.createElement("p")
+	p3.textContent = `Saat Dilimi: ${obj["saatdilimi"]}`
+	let p4 = document.createElement("p")
+	p4.textContent = `Para Birimi: ${obj["parabirimi"]}`
+	let p5 = document.createElement("p")
+	p5.textContent = `ISP: ${obj["isp"]}`
+	
+
+	cards.append(card)
+	card.append(image,cardInfo)
+	cardInfo.append(ipAdd, ulke, p1,p2,p3,p4,p5)
+
+	return cards
+
+}
 
 /*
 	ADIM 4: API'den alınan verileri kullanarak ADIM 3'te verilen yapıda bir kart oluşturun ve 
